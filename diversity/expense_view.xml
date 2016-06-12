@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="exp_form">
+            <field name="name">expense form view</field>
+            <field name="model">expense.register</field>
+            <field name="arch" type="xml">
+                <form string="Expense">
+                    <sheet>
+
+                        <div class="oe_title oe_left">
+                            <h1>
+                                <field name="name" placeholder="Enter Description" required="1" />
+                            </h1>
+
+                        </div>
+                        <group>
+                            <field name="date" />
+                        </group>
+                        <notebook>
+                            <page string="Expense Description">
+                                <field name="exp_desc_ids" >
+                                    <tree editable="bottom">
+                                        <field name="date" />
+                                        <field name="name" />
+                                        <field name="participant_ids" widget="many2many_tags" />
+                                        <field name="payment_type" />
+                                        <field name="paid_by" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Payments">
+
+                            </page>
+                            <page string="Report">
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="exp_tree">
+            <field name="name">exp tree view</field>
+            <field name="model">expense.register</field>
+            <field name="arch" type="xml">
+                <tree string="Expense">
+                    <field name="name" />
+                    <field name="date" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_exp">
+            <field name="name">Expense Register</field>
+            <field name="res_model">expense.register</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+         <menuitem name="Diversity" id="menu_root_1" />
+        <menuitem name="Expense" id="menu_general_1" parent="menu_root_1" />
+        <menuitem id="menu_diversity" parent="menu_general_1"
+            action="action_exp" />
+
+    </data>
+</openerp>
