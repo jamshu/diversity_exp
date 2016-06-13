@@ -7,6 +7,9 @@
             <field name="model">expense.register</field>
             <field name="arch" type="xml">
                 <form string="Expense">
+                    <header>
+                       <button name="get_report_line" string="Compute Report" type="object" class="oe_highlight" /> 
+                    </header>
                     <sheet>
 
                         <div class="oe_title oe_left">
@@ -26,14 +29,31 @@
                                         <field name="name" />
                                         <field name="participant_ids" widget="many2many_tags" />
                                         <field name="payment_type" />
+                                        <field name="amount" />
                                         <field name="paid_by" />
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Payments">
+                            <page string="Cash Received">
+                              <field name="cash_flow_ids" >
+                                <tree editable="bottom">
+                                <field name="date" />
+                                <field name="partner_id" />
+                                <field name="amount" />
+                              </tree>
+                              </field>
+
 
                             </page>
                             <page string="Report">
+                              <field name="report_ids">
+                                <tree editable="bottom">
+                                   <field name="partner_id" />
+                                   <field name="exp_amount" />
+                                   <field name="payed_amount" />
+                                   <field name="balance" />
+                                </tree>
+                              </field>
 
                             </page>
                         </notebook>
