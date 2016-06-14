@@ -12,7 +12,7 @@ def sum_dict(d1, d2):
 class expense_register(models.Model):
     _name = "expense.register"
     _description = "Expense Register"
-
+    _inherit = ['mail.thread']
 
 
     def od_deduplicate(self,l):
