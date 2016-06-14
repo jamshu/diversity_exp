@@ -8,7 +8,9 @@
             <field name="arch" type="xml">
                 <form string="Expense">
                     <header>
-                       <button name="get_report_line" string="Compute Report" type="object" class="oe_highlight" /> 
+                       <button name="get_report_line" string="Compute Report" type="object" class="oe_highlight" />
+                        <button name="set_clear" states="draft" string="Set Clear" type="object" class="oe_highlight" />
+                       <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
 
@@ -18,9 +20,29 @@
                             </h1>
 
                         </div>
-                        <group>
-                            <field name="date" />
-                        </group>
+
+                        <div class="oe_right">
+
+                                <p >
+                                    <label string="Company Debt" />
+                                    <field name="company_debt" />
+                                </p>
+                                <p style="color:blue">
+                                    <label string="Company Balance" />
+                                    <field name="company_balance" />
+                                </p>
+                        </div>
+                        <div class="oe_right">
+                            <p style="color:green">
+                            <label string="Company Income" />
+                            <field name="company_income" />
+                            </p>
+                            <p style="color:red">
+                                <label string="Company Expense" />
+                                <field name="company_payment" />
+                            </p>
+
+                        </div>
                         <notebook>
                             <page string="Expense Description">
                                 <field name="exp_desc_ids" >
@@ -30,7 +52,7 @@
                                         <field name="participant_ids" widget="many2many_tags" />
                                         <field name="payment_type" />
                                         <field name="amount" />
-                                        <field name="paid_by" />
+                                        <field name="paid_by" attrs="{'readonly':[('payment_type','!=','individual')],'required':[('payment_type','=','individual')]}"/>
                                     </tree>
                                 </field>
                             </page>
