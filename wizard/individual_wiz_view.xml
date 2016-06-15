@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+          <record id="wiz_ind_report_form" model="ir.ui.view">
+            <field name="name">wiz report form</field>
+            <field name="model">individual.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Individual Report">
+                    <group>
+                        <group>
+                        <field name="partner_id" />
+                        </group>
+                        <group>
+                        <field name="expense" style="color:red" />
+                        <field name="payment" style="color:green"/>
+                        <field name="balance" style="color:blue" />
+                        </group>
+                    </group>
+                    <group string="Details">
+                        <field name="report_line" nolabel="1">
+                            <tree >
+                                <field name="date"/>
+                                <field name="name"/>
+                                <field name="total_expense" sum="Total Expense"/>
+                                <field name="share" sum="Share"/>
+
+                            </tree>
+                        </field>
+                    </group>
+                <footer>
+                  <button name="load" string="Load Report" type="object" class="oe_highlight" />
+                </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

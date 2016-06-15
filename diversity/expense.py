@@ -35,7 +35,40 @@ class expense_register(models.Model):
                 result.append( item )
 
         return result
+    @api.multi
+    def open_report_wiz(self):
 
+        return {
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'individual.wiz',
+                'type': 'ir.actions.act_window',
+                'target': 'new',
+
+            }
+    def get_ind_detail(self,partner_id):
+        data = []
+        for line in self.exp_desc_ids:
+            exp_amount = line.amount
+            ppl_count = len(line.participant_ids)
+            if ppl_count:
+                unit_amount = exp_amount/ppl_count
+                for part in line.participant_ids:
+                    if  part.id == partner_id:
+                        data.append({'date':line.date,'name':line.name,'total_expense':exp_amount,'share':unit_amount})
+        return data
+    def get_ind_header(self,partner_id):
+        expense = self.get_expenses()
+        payments = self.get_payments()
+        p_exp = 0.0
+        p_pay = 0.0
+        for exp in expense:
+            if exp['partner_id'] == partner_id:
+                p_exp = exp['exp_amount']
+        for pay in payments:
+            if pay['partner_id'] == partner_id:
+                p_pay = pay['payed_amount']
+        return p_pay,p_exp
     def get_expenses(self):
         exp_list= []
 
@@ -49,6 +82,7 @@ class expense_register(models.Model):
         result = self.od_deduplicate(exp_list)
         # result = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), exp_list)
         return result
+
     def get_payments(self):
         pay_list = []
         for line in self.exp_desc_ids:

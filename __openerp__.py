@@ -9,7 +9,8 @@
 	'website': 'https://jamshu.github.io',
 	'depends': ['base','mail'],
 	'data': [
-            'diversity/expense_view.xml'
+            'diversity/expense_view.xml',
+            'wizard/individual_wiz_view.xml',
 			],
 	'demo': [],
 	'test': [],
