@@ -29,6 +29,7 @@
                     </group>
                 <footer>
                   <button name="load" string="Load Report" type="object" class="oe_highlight" />
+                <button name="create_invoice" string="Create Invoice" type="object" class="oe_highlight" />
                 </footer>
                 </form>
             </field>

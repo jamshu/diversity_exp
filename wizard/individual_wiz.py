@@ -7,6 +7,44 @@ class individual_wiz(models.TransientModel):
     payment = fields.Float(string="Total Payment",readonly=True)
     balance = fields.Float(string="Balance",readonly=True)
     report_line = fields.One2many('individual.report.line','wiz_id',string="Report Line",readonly=True)
+
+    def get_journal(self):
+        journal_obj = self.env['account.journal']
+        journal_type = 'sale'
+        journal = journal_obj.search([('type', '=', journal_type)],limit=1)
+        return journal.id
+    def get_invoice_line_val(self):
+        data = []
+        for line in self.report_line:
+            data.append({'name':line.name,'price_unit':line.share})
+        return data
+    @api.multi
+    def create_invoice(self):
+        invoice = self.env['account.invoice']
+        def_val=invoice.default_get([])
+        print "default val>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",def_val
+        partner_id = self.partner_id and self.partner_id.id
+        journal_id = self.get_journal()
+        account_id = self.partner_id and self.partner_id.property_account_receivable and self.partner_id.property_account_receivable.id
+        vals = {'partner_id':partner_id,'journal_id':journal_id,'account_id':account_id,'type':'out_invoice'}
+        invoice_line = self.get_invoice_line_val()
+        line_vals = []
+        for val in invoice_line:
+            val.update({'quantity':1,'account_id':account_id})
+            line_vals.append((0,0,val))
+        vals.update({'invoice_line':line_vals})
+        print "vals>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",vals
+        invoice_id = invoice.create(vals)
+        print "invoice id>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",invoice_id
+        return {
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'account.invoice',
+                'res_id':invoice_id.id,
+                'type': 'ir.actions.act_window',
+
+
+            }
     @api.multi
     def load(self):
         ctx = self.env.context
