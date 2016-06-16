@@ -2,7 +2,7 @@
 from openerp import fields,models,api
 class individual_wiz(models.TransientModel):
     _name = "individual.wiz"
-    partner_id = fields.Many2one('res.partner',string="Partner")
+    partner_id = fields.Many2one('res.partner',string="Partner",required=True)
     expense = fields.Float(string="Total Expense",readonly=True)
     payment = fields.Float(string="Total Payment",readonly=True)
     balance = fields.Float(string="Balance",readonly=True)
@@ -21,8 +21,8 @@ class individual_wiz(models.TransientModel):
     @api.multi
     def create_invoice(self):
         invoice = self.env['account.invoice']
-        def_val=invoice.default_get([])
-        print "default val>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",def_val
+        invoice_line_vals = self.env['account.invoice.line']
+        account_vals  =invoice_line_vals.default_get(['account_id','quantity'])
         partner_id = self.partner_id and self.partner_id.id
         journal_id = self.get_journal()
         account_id = self.partner_id and self.partner_id.property_account_receivable and self.partner_id.property_account_receivable.id
@@ -30,20 +30,19 @@ class individual_wiz(models.TransientModel):
         invoice_line = self.get_invoice_line_val()
         line_vals = []
         for val in invoice_line:
-            val.update({'quantity':1,'account_id':account_id})
+            val.update(account_vals)
             line_vals.append((0,0,val))
         vals.update({'invoice_line':line_vals})
-        print "vals>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",vals
         invoice_id = invoice.create(vals)
-        print "invoice id>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",invoice_id
+        models_data = self.env['ir.model.data']
+        dummy, form_view = models_data.get_object_reference('account','invoice_form')
         return {
                 'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'account.invoice',
+                'views': [(form_view or False, 'form')],
                 'res_id':invoice_id.id,
                 'type': 'ir.actions.act_window',
-
-
             }
     @api.multi
     def load(self):
