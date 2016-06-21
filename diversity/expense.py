@@ -22,8 +22,11 @@ class expense_register(models.Model):
                     exp_amount +=item.get('exp_amount',0)
                     payed_amount = r_item.get('payed_amount',0)
                     payed_amount += item.get('payed_amount',0)
+                    return_amount = r_item.get('return_amount',0)
+                    return_amount += item.get('return_amount',0)
                     r_item['exp_amount'] = exp_amount
                     r_item['payed_amount'] =payed_amount
+                    r_item['return_amount'] = return_amount
             if check == False :
                 # if not found, add item to result (new record)
                 result.append( item )
@@ -89,11 +92,20 @@ class expense_register(models.Model):
                 pay_list.append(val)
         result = self.od_deduplicate(pay_list)
         return result
+    def get_return(self):
+        pay_list = []
+        for line in self.cash_return_ids:
+            if line.partner_id:
+                val={'partner_id':line.partner_id.id,'return_amount':line.amount}
+                pay_list.append(val)
+        result = self.od_deduplicate(pay_list)
+        return result
     def get_vals(self):
         exp_id = self.id
         expenses = self.get_expenses()
         payments = self.get_payments()
-        vals = expenses + payments
+        return_vals = self.get_return()
+        vals = expenses + payments + return_vals
         result= self.od_deduplicate(vals)
         return result
     @api.one
@@ -134,7 +146,8 @@ class expense_register(models.Model):
     company_balance = fields.Float(string="Company Payment",compute="_compute_exp")
     company_debt = fields.Float(string="Company Debt",compute="_compute_exp")
     exp_desc_ids = fields.One2many('expense.desc.line','exp_id',string="Expense Desc Line")
-    cash_flow_ids = fields.One2many('cash.flow','exp_id',string="Expense Desc Line")
+    cash_flow_ids = fields.One2many('cash.flow','exp_id',string="Expense Received Line")
+    cash_return_ids = fields.One2many('cash.return','exp_id',string="Cash Return")
     report_ids = fields.One2many('cash.report','exp_id',string="Reports",readonly=True)
     state = fields.Selection([('draft','In Progress'),('clear','Cleared')],string="Status",default="draft")
 class expense_desc_line(models.Model):
@@ -150,7 +163,6 @@ class expense_desc_line(models.Model):
     @api.onchange('fav_id')
     def onchange_fav_id(self):
         if self.fav_id:
-            print "fav ids members>>>>>>>>>>>>>>>>>>>>>>",self.fav_id.participant_ids
             self.participant_ids = self.fav_id.participant_ids
 class cash_flow(models.Model):
     _name ="cash.flow"
@@ -158,16 +170,20 @@ class cash_flow(models.Model):
     date = fields.Date(string="Date",default=fields.Date.context_today)
     partner_id = fields.Many2one('res.partner',string="Giver")
     amount = fields.Float(string="Amount")
+class cash_return(models.Model):
+    _inherit = "cash.flow"
+    _name ="cash.return"
 class cash_report(models.Model):
     _name  = "cash.report"
     @api.one
     @api.depends('exp_amount','payed_amount')
     def get_balance(self):
-        self.balance = self.payed_amount - self.exp_amount
+        self.balance = self.payed_amount - (self.exp_amount + self.return_amount)
     exp_id = fields.Many2one('expense.register',string='Expense Session')
     partner_id = fields.Many2one('res.partner',string="Partner")
     exp_amount = fields.Float(string="Expense")
     payed_amount = fields.Float(string="Payed Amount")
+    return_amount = fields.Float(string="Return Amount")
     balance = fields.Float(string="Balance",compute="get_balance")
 class fav_group(models.Model):
     _name = "fav.group"
