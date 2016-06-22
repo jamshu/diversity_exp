@@ -131,6 +131,8 @@ class expense_register(models.Model):
                 expense += line.amount
             if line.payment_type == 'individual':
                 debt += line.amount
+        for line in self.cash_return_ids:
+            expense += line.amount
         balance = income - expense
         self.company_income = income
         self.company_payment = expense
