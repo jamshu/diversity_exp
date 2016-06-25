@@ -61,7 +61,7 @@ class expense_register(models.Model):
                 data.append({'date':line.date,'name':line.name,'payed_amount':line.amount})
         for line in self.cash_flow_ids:
             if line.partner_id and line.partner_id.id == partner_id:
-                data.append({'date':line.date,'name':'Cash Payment To Comapany','payed_amount':line.amount})
+                data.append({'date':line.date,'name':'Cash Payment To Company','payed_amount':line.amount})
         return data
     def get_ind_header(self,partner_id):
         expense = self.get_expenses()
