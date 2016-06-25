@@ -16,7 +16,8 @@
                         <field name="balance" style="color:blue" />
                         </group>
                     </group>
-                    <group string="Details">
+                    <notebook>
+                        <page string="Expense Details">
                         <field name="report_line" nolabel="1">
                             <tree >
                                 <field name="date"/>
@@ -26,7 +27,18 @@
 
                             </tree>
                         </field>
-                    </group>
+                    </page>
+                    <page string="Payment Details">
+                        <field name="payment_line" nolabel="1">
+                            <tree >
+                                <field name="date"/>
+                                <field name="name"/>
+                                <field name="payed_amount" sum="Payed Amount"/>
+                            </tree>
+                        </field>
+                    </page>
+                    </notebook>
+
                 <footer>
                   <button name="load" string="Load Report" type="object" class="oe_highlight" />
                 <button name="create_invoice" string="Create Invoice" type="object" class="oe_highlight" />

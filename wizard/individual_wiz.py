@@ -7,6 +7,7 @@ class individual_wiz(models.TransientModel):
     payment = fields.Float(string="Total Payment",readonly=True)
     balance = fields.Float(string="Balance",readonly=True)
     report_line = fields.One2many('individual.report.line','wiz_id',string="Report Line",readonly=True)
+    payment_line = fields.One2many('individual.payment.line','wiz_id',string="Report Line",readonly=True)
 
     def get_journal(self):
         journal_obj = self.env['account.journal']
@@ -57,7 +58,9 @@ class individual_wiz(models.TransientModel):
         self.expense = expense
         self.balance = payment - expense
         details = expense_obj.get_ind_detail(partner_id)
+        payments = expense_obj.get_payment_detail(partner_id)
         self.report_line = details
+        self.payment_line = payments
         return {
                 'view_type': 'form',
                 'view_mode': 'form',
@@ -73,4 +76,10 @@ class individual_report_line(models.TransientModel):
     total_expense = fields.Float(string="Actual Expense")
     share = fields.Float(string="Your Share")
     name = fields.Char(string="Expense Detail")
+    date = fields.Date(string="Date")
+class individual_payment_line(models.TransientModel):
+    _name = "individual.payment.line"
+    wiz_id = fields.Many2one('individual.wiz',string="Wizard")
+    payed_amount = fields.Float(string="Payed Amount")
+    name = fields.Char(string="Payment Detail")
     date = fields.Date(string="Date")

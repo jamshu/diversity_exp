@@ -54,6 +54,15 @@ class expense_register(models.Model):
                     if  part.id == partner_id:
                         data.append({'date':line.date,'name':line.name,'total_expense':exp_amount,'share':unit_amount})
         return data
+    def get_payment_detail(self,partner_id):
+        data = []
+        for line in self.exp_desc_ids:
+            if line.paid_by and line.paid_by.id == partner_id:
+                data.append({'date':line.date,'name':line.name,'payed_amount':line.amount})
+        for line in self.cash_flow_ids:
+            if line.partner_id and line.partner_id.id == partner_id:
+                data.append({'date':line.date,'name':'Cash Payment To Comapany','payed_amount':line.amount})
+        return data
     def get_ind_header(self,partner_id):
         expense = self.get_expenses()
         payments = self.get_payments()
