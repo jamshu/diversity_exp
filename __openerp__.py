@@ -7,8 +7,9 @@
 	'summary': 'Expense Book',
 	'author': 'Jamshid',
 	'website': 'https://jamshu.github.io',
-	'depends': ['base','mail'],
+	'depends': ['base','mail','account'],
 	'data': [
+			'diversity/invoice_view.xml',
             'diversity/expense_view.xml',
             'wizard/individual_wiz_view.xml',
 			],

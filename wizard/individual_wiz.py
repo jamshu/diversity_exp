@@ -27,7 +27,12 @@ class individual_wiz(models.TransientModel):
         partner_id = self.partner_id and self.partner_id.id
         journal_id = self.get_journal()
         account_id = self.partner_id and self.partner_id.property_account_receivable and self.partner_id.property_account_receivable.id
-        vals = {'partner_id':partner_id,'journal_id':journal_id,'account_id':account_id,'type':'out_invoice'}
+        expense = self.expense or 0.0
+        payment = self.payment or 0.0
+        balance = expense - payment
+        vals = {'partner_id':partner_id,'journal_id':journal_id,'account_id':account_id,'type':'out_invoice',
+        'div_expense':expense,'div_payed_amount':payment,'div_balance':balance
+        }
         invoice_line = self.get_invoice_line_val()
         line_vals = []
         for val in invoice_line:
