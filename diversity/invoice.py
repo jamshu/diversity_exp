@@ -8,6 +8,7 @@ class account_invoice(models.Model):
     div_balance = fields.Float(string="Balance",readonly=True)
 class account_invoice_line(models.Model):
     _inherit = "account.invoice.line"
+    _order ="date ASC"
     date = fields.Date(string="Date")
     bill_amount = fields.Float(string="Bill Amount")
     paid_by = fields.Many2one('res.partner',string="Paid By")
