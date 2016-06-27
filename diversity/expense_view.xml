@@ -43,6 +43,7 @@
                             <page string="Expense Description">
                                 <field name="exp_desc_ids" >
                                     <tree editable="bottom">
+                                        <field name="sequence" widget="handle" />
                                         <field name="date" />
                                         <field name="name" />
                                         <field name="fav_id" />

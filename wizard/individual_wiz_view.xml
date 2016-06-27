@@ -12,6 +12,7 @@
                         </group>
                         <group>
                         <field name="expense" style="color:red" />
+                        <field name="return_amount" style="color:red" />
                         <field name="payment" style="color:green"/>
                         <field name="balance" style="color:blue" />
                         </group>
@@ -20,11 +21,12 @@
                         <page string="Expense Details">
                         <field name="report_line" nolabel="1">
                             <tree >
+                                
                                 <field name="date"/>
                                 <field name="name"/>
                                 <field name="total_expense" sum="Total Expense"/>
                                 <field name="share" sum="Share"/>
-
+                                <field name="paid_by" sum="Share"/>
                             </tree>
                         </field>
                     </page>

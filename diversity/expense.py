@@ -52,7 +52,7 @@ class expense_register(models.Model):
                 unit_amount = exp_amount/ppl_count
                 for part in line.participant_ids:
                     if  part.id == partner_id:
-                        data.append({'date':line.date,'name':line.name,'total_expense':exp_amount,'share':unit_amount})
+                        data.append({'date':line.date,'name':line.name,'total_expense':exp_amount,'share':unit_amount,'paid_by':line.paid_by and line.paid_by.id})
         return data
     def get_payment_detail(self,partner_id):
         data = []
@@ -65,16 +65,21 @@ class expense_register(models.Model):
         return data
     def get_ind_header(self,partner_id):
         expense = self.get_expenses()
+        return_vals = self.get_return_vals()
         payments = self.get_payments()
         p_exp = 0.0
         p_pay = 0.0
+        return_amount = 0.0
         for exp in expense:
             if exp['partner_id'] == partner_id:
                 p_exp = exp['exp_amount']
         for pay in payments:
             if pay['partner_id'] == partner_id:
                 p_pay = pay['payed_amount']
-        return p_pay,p_exp
+        for ret in return_vals:
+            if ret['partner_id'] == partner_id:
+                return_amount = ret['return_amount']
+        return p_pay,p_exp,return_amount
     def get_expenses(self):
         exp_list= []
 
@@ -89,6 +94,13 @@ class expense_register(models.Model):
         # result = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), exp_list)
         return result
 
+    def get_return_vals(self):
+        return_list = []
+        for line in self.cash_return_ids:
+            val={'partner_id':line.partner_id.id,'return_amount':line.amount}
+            return_list.append(val)
+        result = self.od_deduplicate(return_list)
+        return result
     def get_payments(self):
         pay_list = []
         for line in self.exp_desc_ids:
@@ -163,6 +175,8 @@ class expense_register(models.Model):
     state = fields.Selection([('draft','In Progress'),('clear','Cleared')],string="Status",default="draft")
 class expense_desc_line(models.Model):
     _name = "expense.desc.line"
+    _order = "sequence"
+    sequence = fields.Integer(string="Sequence",default=10)
     exp_id = fields.Many2one('expense.register',string='Expense Session')
     date = fields.Date(string="Date",default=fields.Date.context_today)
     name = fields.Char(string="Description")

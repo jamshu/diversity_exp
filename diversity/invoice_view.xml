@@ -9,7 +9,18 @@
             <xpath expr="//field[@name='residual']" position="replace">
                 <field name="div_expense"/>
                 <field name="div_payed_amount"/>
+                <field name="div_return_amount"/>
                 <field name="div_balance"/>
+            </xpath>
+
+             <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='product_id']" position="replace">
+                 <field name="date" />
+            </xpath>
+             <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='quantity']" position="replace">
+                 <field name="bill_amount" />
+            </xpath>
+             <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='price_subtotal']" position="after">
+                 <field name="paid_by" />
             </xpath>
           </field>
       </record>

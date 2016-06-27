@@ -6,6 +6,7 @@ class individual_wiz(models.TransientModel):
     expense = fields.Float(string="Total Expense",readonly=True)
     payment = fields.Float(string="Total Payment",readonly=True)
     balance = fields.Float(string="Balance",readonly=True)
+    return_amount = fields.Float(string="Return Amount",readonly=True)
     report_line = fields.One2many('individual.report.line','wiz_id',string="Report Line",readonly=True)
     payment_line = fields.One2many('individual.payment.line','wiz_id',string="Report Line",readonly=True)
 
@@ -17,7 +18,7 @@ class individual_wiz(models.TransientModel):
     def get_invoice_line_val(self):
         data = []
         for line in self.report_line:
-            data.append({'name':line.name,'price_unit':line.share})
+            data.append({'name':line.name,'price_unit':line.share,'date':line.date,'bill_amount':line.total_expense,'paid_by':line.paid_by and line.paid_by.id})
         return data
     @api.multi
     def create_invoice(self):
@@ -29,9 +30,10 @@ class individual_wiz(models.TransientModel):
         account_id = self.partner_id and self.partner_id.property_account_receivable and self.partner_id.property_account_receivable.id
         expense = self.expense or 0.0
         payment = self.payment or 0.0
-        balance = expense - payment
+        return_amount = self.return_amount or 0.0
+        balance = (expense+return_amount) - payment
         vals = {'partner_id':partner_id,'journal_id':journal_id,'account_id':account_id,'type':'out_invoice',
-        'div_expense':expense,'div_payed_amount':payment,'div_balance':balance
+        'div_expense':expense,'div_payed_amount':payment,'div_balance':balance,'div_return_amount':return_amount
         }
         invoice_line = self.get_invoice_line_val()
         line_vals = []
@@ -58,10 +60,11 @@ class individual_wiz(models.TransientModel):
         expense_reg = self.env['expense.register']
         expense_obj = expense_reg.browse(active_id)
         partner_id = self.partner_id and self.partner_id.id
-        payment,expense = expense_obj.get_ind_header(partner_id)
+        payment,expense,return_amount = expense_obj.get_ind_header(partner_id)
         self.payment = payment
         self.expense = expense
-        self.balance = payment - expense
+        self.return_amount = return_amount
+        self.balance = payment - (expense + return_amount)
         details = expense_obj.get_ind_detail(partner_id)
         payments = expense_obj.get_payment_detail(partner_id)
         self.report_line = details
@@ -82,6 +85,7 @@ class individual_report_line(models.TransientModel):
     share = fields.Float(string="Your Share")
     name = fields.Char(string="Expense Detail")
     date = fields.Date(string="Date")
+    paid_by = fields.Many2one('res.partner',string="Paid By")
 class individual_payment_line(models.TransientModel):
     _name = "individual.payment.line"
     wiz_id = fields.Many2one('individual.wiz',string="Wizard")
