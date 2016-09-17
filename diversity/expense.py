@@ -173,6 +173,10 @@ class expense_register(models.Model):
     cash_return_ids = fields.One2many('cash.return','exp_id',string="Cash Return")
     report_ids = fields.One2many('cash.report','exp_id',string="Reports",readonly=True)
     state = fields.Selection([('draft','In Progress'),('clear','Cleared')],string="Status",default="draft")
+
+class exp_type(models.Model):
+    _name = "exp.type"
+    name = fields.Char(string="Exp Type")
 class expense_desc_line(models.Model):
     _name = "expense.desc.line"
     _order = "sequence"
@@ -180,10 +184,11 @@ class expense_desc_line(models.Model):
     exp_id = fields.Many2one('expense.register',string='Expense Session')
     date = fields.Date(string="Date",default=fields.Date.context_today)
     name = fields.Char(string="Description")
-    payment_type = fields.Selection([('company','Company'),('individual','Individual')],string="Payment Type",required=True)
+    payment_type = fields.Selection([('company','Company'),('individual','Individual')],string="Payment Type",required=True,default="individual")
     fav_id = fields.Many2one('fav.group',string="Favorite")
     participant_ids = fields.Many2many('res.partner','rel_partner_exp','exp_id','partner_id',string="Participants")
     amount = fields.Float(string="Amount")
+    exp_type_id = fields.Many2one('exp.type',string="Expense Type")
     paid_by = fields.Many2one('res.partner',string="Paid By")
     @api.onchange('fav_id')
     def onchange_fav_id(self):
