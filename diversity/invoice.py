@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from openerp import models,api,fields
+from odoo import models,api,fields
 class account_invoice(models.Model):
     _inherit ="account.invoice"
     div_expense = fields.Float(string="Expense",readonly=True)

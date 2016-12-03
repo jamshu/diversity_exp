@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    <openerp>
+    <data>
+    	
+            
+            <record model="ir.ui.view" id="hello_world_tree_view">
+                <field name="name">objectname.tree</field>
+                <field name="model">objectname</field>
+                <field name="type">tree</field>
+                <field name="arch" type="xml">
+                    <tree string="tree_string">
+                        <field name="name"/>
+                    </tree>
+                </field>
+            </record>
+
+            <record model="ir.ui.view" id="hello_world_form_view">
+                <field name="name">objectname.form</field>
+                <field name="model">objectname</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form string="form_string">
+                        <field name="name" select="1"/>
+                    </form>
+                </field>
+            </record>
+
+            <record model="ir.actions.act_window" id="action_hello_world_tree_view">
+                <field name="name">objectname</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">objectname</field>
+		   <!-- <field name="domain">[('field_name','condition',criteria)]</field>-->
+                <field name="view_type">form</field>
+                <field name="view_mode">tree,form</field>
+                <field name="view_id" ref="hello_world_tree_view"/>
+            </record>
+
+			<menuitem id="hello_world_menu" name="objectname" parent="" action="action_hello_world_tree_view"/>
+
+    
+    </data>
+</openerp>
+    
+    </data>
+</openerp>

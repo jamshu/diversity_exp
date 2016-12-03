@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from openerp import fields,models,api
+from odoo import fields,models,api
 class individual_wiz(models.TransientModel):
     _name = "individual.wiz"
     partner_id = fields.Many2one('res.partner',string="Partner",required=True)
