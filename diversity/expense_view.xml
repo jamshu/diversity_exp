@@ -50,7 +50,9 @@
                                         <field name="participant_ids" widget="many2many_tags" />
                                         <field name="exp_type_id" />
                                         <field name="amount" sum="Amount"/>
-                                        <field name="paid_by" required="1"/>
+                                         <field name="payment_type" />
+                                        <field name="paid_by"         
+            attrs="{'required':[('payment_type','=','individual')]}"/>
                                     </tree>
                                 </field>
                             </page>

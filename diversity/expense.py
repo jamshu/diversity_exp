@@ -184,7 +184,7 @@ class expense_desc_line(models.Model):
     exp_id = fields.Many2one('expense.register',string='Expense Session')
     date = fields.Date(string="Date",default=fields.Date.context_today)
     name = fields.Char(string="Description")
-    payment_type = fields.Selection([('company','Company'),('individual','Individual')],string="Payment Type",required=True,default="individual")
+    payment_type = fields.Selection([('company','Company'),('individual','Individual')],string="Payment Type",required=True,default="company")
     fav_id = fields.Many2one('fav.group',string="Favorite")
     participant_ids = fields.Many2many('res.partner','rel_partner_exp','exp_id','partner_id',string="Participants")
     amount = fields.Float(string="Amount")
