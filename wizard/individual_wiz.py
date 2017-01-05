@@ -27,7 +27,7 @@ class individual_wiz(models.TransientModel):
         account_vals  =invoice_line_vals.default_get(['account_id','quantity'])
         partner_id = self.partner_id and self.partner_id.id
         journal_id = self.get_journal()
-        account_id = self.partner_id and self.partner_id.property_account_receivable and self.partner_id.property_account_receivable.id
+        account_id = self.partner_id and self.partner_id.property_account_receivable_id and self.partner_id.property_account_receivable_id.id
         expense = self.expense or 0.0
         payment = self.payment or 0.0
         return_amount = self.return_amount or 0.0
@@ -40,7 +40,7 @@ class individual_wiz(models.TransientModel):
         for val in invoice_line:
             val.update(account_vals)
             line_vals.append((0,0,val))
-        vals.update({'invoice_line':line_vals})
+        vals.update({'invoice_line_ids':line_vals})
         invoice_id = invoice.create(vals)
         models_data = self.env['ir.model.data']
         dummy, form_view = models_data.get_object_reference('account','invoice_form')
